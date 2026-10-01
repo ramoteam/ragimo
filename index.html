@@ -153,6 +153,11 @@
       try{const d=await api("profile");user=d.user;renderMap();}
       catch(e){screen.innerHTML='<div class="card error">'+esc(e.message)+'</div>';}
     }
+    setInterval(()=>{
+      const active=document.querySelector('.nav button.active');
+      if(active&&active.dataset.screen==="map") renderMap();
+    },60000);
+
     start();
   </script>
 </body>
