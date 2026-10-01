@@ -9,139 +9,142 @@
   <style>
     :root { color-scheme: light dark; }
     * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: var(--tg-theme-bg-color, #f5f5f5);
-      color: var(--tg-theme-text-color, #111);
-    }
-    main { max-width: 520px; margin: auto; padding: 28px 18px; }
-    .logo { font-size: 34px; font-weight: 900; letter-spacing: -1px; }
-    .sub { opacity: .65; margin-top: 4px; }
-    .card {
-      margin-top: 22px; padding: 22px; border-radius: 24px;
-      background: var(--tg-theme-secondary-bg-color, #fff);
-    }
-    .avatar {
-      width: 68px; height: 68px; border-radius: 20px; display: grid;
-      place-items: center; background: #111; color: #fff;
-      font-size: 30px; font-weight: 800;
-    }
-    .name { font-size: 25px; font-weight: 800; margin-top: 16px; }
-    .username { opacity: .55; margin-top: 3px; }
-    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 22px; }
-    .stat {
-      padding: 14px 10px; border-radius: 16px;
-      background: var(--tg-theme-bg-color, #f5f5f5); text-align: center;
-    }
-    .num { font-size: 22px; font-weight: 800; }
-    .label { font-size: 12px; opacity: .55; }
-    .loading { text-align: center; padding: 40px 0; opacity: .65; }
-    .error { text-align: center; padding: 30px 0; color: #b42318; }
-    .map { position: relative; height: 310px; overflow: hidden; border-radius: 24px; margin-top: 22px;
-      background: #dfe8d5; box-shadow: inset 0 0 0 1px rgba(0,0,0,.06); }
-    .map:before { content: ""; position: absolute; inset: -30%; transform: rotate(-7deg);
-      background: repeating-linear-gradient(22deg, transparent 0 58px, rgba(255,255,255,.75) 59px 66px); }
-    .map:after { content: ""; position: absolute; width: 120%; height: 75px; left: -10%; top: 125px;
-      background: rgba(151,190,215,.72); transform: rotate(-12deg); border-radius: 50%; }
-    .road { position:absolute; background:rgba(255,255,255,.9); border-radius:99px; z-index:1; }
-    .road.one { width:120%; height:13px; top:72px; left:-10%; transform:rotate(18deg); }
-    .road.two { width:100%; height:11px; top:235px; left:0; transform:rotate(-24deg); }
-    .player { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:25px;height:25px;
-      border-radius:50%; background:#111; border:5px solid #fff; z-index:4; box-shadow:0 3px 12px rgba(0,0,0,.25); }
-    .creature { position:absolute; z-index:5; width:58px;height:58px;border-radius:20px;display:grid;place-items:center;
-      font-size:31px; background:#fff; box-shadow:0 6px 18px rgba(0,0,0,.16); border:0; cursor:pointer; }
-    .creature.a { left:18%; top:25%; } .creature.b { right:14%; top:55%; }
-    .map-label { position:absolute; z-index:6; left:14px; top:14px; padding:7px 10px;border-radius:12px;
-      background:rgba(255,255,255,.88);font-size:12px;font-weight:700; }
-    .hint { margin-top:12px; font-size:13px; opacity:.62; text-align:center; }
-    .nav { position:fixed; left:12px; right:12px; bottom:12px; max-width:496px; margin:auto;
-      display:grid; grid-template-columns:repeat(3,1fr); gap:8px; padding:8px; border-radius:20px;
-      background:var(--tg-theme-secondary-bg-color,#fff); box-shadow:0 8px 30px rgba(0,0,0,.12); }
-    .nav button { border:0; background:transparent; color:inherit; padding:10px 4px; border-radius:14px; font-weight:700; }
-    .nav button.active { background:var(--tg-theme-bg-color,#f5f5f5); }
-    .spacer { height:82px; }
+    body { margin:0; min-height:100vh; font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:var(--tg-theme-bg-color,#f5f5f5); color:var(--tg-theme-text-color,#111); }
+    main { max-width:520px; margin:auto; padding:22px 18px 96px; }
+    .logo { font-size:34px; font-weight:900; letter-spacing:-1px; }
+    .sub { opacity:.65; margin-top:4px; }
+    .card { margin-top:18px; padding:20px; border-radius:24px; background:var(--tg-theme-secondary-bg-color,#fff); }
+    .avatar { width:68px;height:68px;border-radius:20px;display:grid;place-items:center;background:#111;color:#fff;font-size:30px;font-weight:800; }
+    .name { font-size:25px;font-weight:800;margin-top:14px; }
+    .username { opacity:.55;margin-top:3px; }
+    .stats { display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px; }
+    .stat { padding:13px 8px;border-radius:16px;background:var(--tg-theme-bg-color,#f5f5f5);text-align:center; }
+    .num { font-size:21px;font-weight:800; }.label { font-size:11px;opacity:.55; }
+    .loading{text-align:center;padding:34px 0;opacity:.65}.error{text-align:center;padding:28px 0;color:#b42318}
+    .map { position:relative;height:310px;overflow:hidden;border-radius:24px;margin-top:18px;background:#dfe8d5;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06); }
+    .map:before { content:"";position:absolute;inset:-30%;transform:rotate(-7deg);background:repeating-linear-gradient(22deg,transparent 0 58px,rgba(255,255,255,.75) 59px 66px); }
+    .map:after { content:"";position:absolute;width:120%;height:75px;left:-10%;top:125px;background:rgba(151,190,215,.72);transform:rotate(-12deg);border-radius:50%; }
+    .road{position:absolute;background:rgba(255,255,255,.9);border-radius:99px;z-index:1}.road.one{width:120%;height:13px;top:72px;left:-10%;transform:rotate(18deg)}.road.two{width:100%;height:11px;top:235px;left:0;transform:rotate(-24deg)}
+    .player{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:25px;height:25px;border-radius:50%;background:#111;border:5px solid #fff;z-index:4;box-shadow:0 3px 12px rgba(0,0,0,.25)}
+    .creature{position:absolute;z-index:5;width:58px;height:58px;border-radius:20px;display:grid;place-items:center;font-size:31px;background:#fff;box-shadow:0 6px 18px rgba(0,0,0,.16);border:0;cursor:pointer}.creature.a{left:18%;top:25%}.creature.b{right:14%;top:55%}
+    .map-label{position:absolute;z-index:6;left:14px;top:14px;padding:7px 10px;border-radius:12px;background:rgba(255,255,255,.88);font-size:12px;font-weight:700}
+    .hint{margin-top:10px;font-size:13px;opacity:.62;text-align:center}
+    .section-title{font-size:22px;font-weight:800}.collection-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:16px}
+    .creature-card{padding:18px;border-radius:20px;background:var(--tg-theme-secondary-bg-color,#fff);text-align:center}.creature-emoji{font-size:46px}.creature-name{font-weight:800;margin-top:8px}.rarity{font-size:12px;opacity:.55;margin-top:3px}
+    .empty{text-align:center;padding:36px 10px;opacity:.6}
+    .hidden{display:none!important}
+    .nav{position:fixed;left:12px;right:12px;bottom:12px;max-width:496px;margin:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:8px;border-radius:20px;background:var(--tg-theme-secondary-bg-color,#fff);box-shadow:0 8px 30px rgba(0,0,0,.12);z-index:20}
+    .nav button{border:0;background:transparent;color:inherit;padding:10px 4px;border-radius:14px;font-weight:700}.nav button.active{background:var(--tg-theme-bg-color,#f5f5f5)}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.42);display:grid;place-items:end center;padding:16px;z-index:30}.sheet{width:min(520px,100%);padding:24px;border-radius:28px;background:var(--tg-theme-secondary-bg-color,#fff);text-align:center}.sheet-emoji{font-size:72px}.sheet h2{margin:8px 0 4px}.sheet p{margin:0 0 18px;opacity:.62}.primary{width:100%;border:0;border-radius:16px;padding:14px;background:#111;color:#fff;font-size:16px;font-weight:800}.secondary{width:100%;border:0;background:transparent;color:inherit;padding:12px;font-weight:700}
   </style>
 </head>
 <body>
   <main>
     <div class="logo">Ragimo 🌍✨</div>
     <div class="sub">Explore. Collect. Discover.</div>
-    <div id="app" class="card"><div class="loading">Loading your profile…</div></div>
-    <div class="map">
-      <div class="map-label">📍 Nearby</div>
-      <div class="road one"></div><div class="road two"></div>
-      <div class="player"></div>
-      <button class="creature a" data-creature="Leafy">🌱</button>
-      <button class="creature b" data-creature="Flamio">🔥</button>
-    </div>
-    <div class="hint">Tap a nearby Ragimo to inspect it.</div>
-    <div class="spacer"></div>
-    <nav class="nav">
-      <button class="active">🗺️ Map</button><button>📚 Collection</button><button>👤 Profile</button>
-    </nav>
+    <div id="screen"></div>
   </main>
 
+  <div id="modal" class="modal hidden"></div>
+
+  <nav class="nav">
+    <button class="active" data-screen="map">🗺️ Map</button>
+    <button data-screen="collection">📚 Collection</button>
+    <button data-screen="profile">👤 Profile</button>
+  </nav>
+
   <script>
-    const API_URL = "https://ucrdzeveifycwsvneuhs.supabase.co/functions/v1/ragimo-mini-app";
-    const tg = window.Telegram && window.Telegram.WebApp;
-    const app = document.getElementById("app");
+    const API_URL="https://ucrdzeveifycwsvneuhs.supabase.co/functions/v1/ragimo-mini-app";
+    const tg=window.Telegram&&window.Telegram.WebApp;
+    const screen=document.getElementById("screen");
+    const modal=document.getElementById("modal");
+    let user=null;
 
-    if (tg) {
-      tg.ready();
-      tg.expand();
+    if(tg){tg.ready();tg.expand();}
+
+    function esc(v){return String(v).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+    async function api(action, extra={}){
+      if(!tg||!tg.initData) throw new Error("Open Ragimo from Telegram.");
+      const r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:tg.initData,action,...extra})});
+      const d=await r.json();
+      if(!r.ok) throw new Error(d.error||"Request failed");
+      return d;
     }
 
-    function esc(value) {
-      return String(value).replace(/[&<>"]/g, c => ({
-        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"
-      }[c]));
+    function renderProfile(){
+      const initial=(user.display_name||user.first_name||"R").trim().charAt(0).toUpperCase();
+      const name=user.display_name||user.first_name||"Ragimo Player";
+      const username=user.username?"@"+user.username:"Ragimo Explorer";
+      screen.innerHTML='<div class="card"><div class="avatar">'+esc(initial)+'</div><div class="name">'+esc(name)+'</div><div class="username">'+esc(username)+'</div><div class="stats">'+
+        '<div class="stat"><div class="num">'+(Number(user.level)||1)+'</div><div class="label">LEVEL</div></div>'+
+        '<div class="stat"><div class="num">'+(Number(user.xp)||0)+'</div><div class="label">XP</div></div>'+
+        '<div class="stat"><div class="num">'+(Number(user.coins)||0)+'</div><div class="label">COINS</div></div></div></div>';
     }
 
-    async function load() {
-      try {
-        if (!tg || !tg.initData) {
-          throw new Error("Open Ragimo from Telegram.");
+    function renderMap(){
+      screen.innerHTML='<div class="map"><div class="map-label">📍 Nearby</div><div class="road one"></div><div class="road two"></div><div class="player"></div>'+
+        '<button class="creature a" data-slug="leafy" data-name="Leafy" data-emoji="🌱">🌱</button>'+
+        '<button class="creature b" data-slug="flamio" data-name="Flamio" data-emoji="🔥">🔥</button></div>'+
+        '<div class="hint">Tap a nearby Ragimo to inspect it.</div>';
+      document.querySelectorAll(".creature").forEach(b=>b.addEventListener("click",()=>openCreature(b.dataset.slug,b.dataset.name,b.dataset.emoji)));
+    }
+
+    async function renderCollection(){
+      screen.innerHTML='<div class="card"><div class="section-title">Your Collection</div><div class="loading">Loading collection…</div></div>';
+      try{
+        const d=await api("collection");
+        user=d.user;
+        if(!d.collection.length){
+          screen.innerHTML='<div class="card"><div class="section-title">Your Collection</div><div class="empty">Nothing caught yet.<br>Go to the map and find your first Ragimo! 🌱</div></div>';
+          return;
         }
-
-        const response = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ initData: tg.initData })
-        });
-
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error || "Unable to load profile.");
-
-        const u = data.user;
-        const initial = (u.display_name || u.first_name || "R").trim().charAt(0).toUpperCase();
-        const name = u.display_name || u.first_name || "Ragimo Player";
-        const username = u.username ? "@" + u.username : "Ragimo Explorer";
-
-        app.innerHTML =
-          '<div class="avatar">' + esc(initial) + '</div>' +
-          '<div class="name">' + esc(name) + '</div>' +
-          '<div class="username">' + esc(username) + '</div>' +
-          '<div class="stats">' +
-            '<div class="stat"><div class="num">' + (Number(u.level) || 1) + '</div><div class="label">LEVEL</div></div>' +
-            '<div class="stat"><div class="num">' + (Number(u.xp) || 0) + '</div><div class="label">XP</div></div>' +
-            '<div class="stat"><div class="num">' + (Number(u.coins) || 0) + '</div><div class="label">COINS</div></div>' +
-          '</div>';
-      } catch (error) {
-        app.innerHTML = '<div class="error">' + esc(error.message) + '</div>';
-      }
+        const cards=d.collection.map(x=>'<div class="creature-card"><div class="creature-emoji">'+esc(x.creature.emoji)+'</div><div class="creature-name">'+esc(x.creature.name)+'</div><div class="rarity">'+esc(x.creature.rarity)+'</div></div>').join("");
+        screen.innerHTML='<div class="card"><div class="section-title">Your Collection</div><div class="collection-grid">'+cards+'</div></div>';
+      }catch(e){screen.innerHTML='<div class="card error">'+esc(e.message)+'</div>';}
     }
 
-    document.querySelectorAll(".creature").forEach(button => {
-      button.addEventListener("click", () => {
-        const name = button.dataset.creature;
-        if (tg && tg.showAlert) tg.showAlert(name + " is nearby! Capture system coming next.");
-        else alert(name + " is nearby!");
-      });
-    });
+    function openCreature(slug,name,emoji){
+      modal.innerHTML='<div class="sheet"><div class="sheet-emoji">'+esc(emoji)+'</div><h2>'+esc(name)+'</h2><p>A wild Ragimo is nearby.</p><button class="primary" id="capture">✨ Catch '+esc(name)+'</button><button class="secondary" id="close">Close</button></div>';
+      modal.classList.remove("hidden");
+      document.getElementById("close").onclick=()=>modal.classList.add("hidden");
+      document.getElementById("capture").onclick=async()=>{
+        const btn=document.getElementById("capture");btn.disabled=true;btn.textContent="Catching…";
+        try{
+          const d=await api("capture",{slug});
+          modal.classList.add("hidden");
+          user=d.user;
+          if(d.alreadyOwned){
+            if(tg&&tg.showAlert)tg.showAlert(name+" is already in your collection.");
+          }else{
+            if(tg&&tg.showAlert)tg.showAlert("✨ "+name+" was caught! +10 XP · +5 coins");
+          }
+          setActive("collection"); await renderCollection();
+        }catch(e){
+          btn.disabled=false;btn.textContent="✨ Catch "+name;
+          if(tg&&tg.showAlert)tg.showAlert(e.message); else alert(e.message);
+        }
+      };
+    }
 
-    load();
+    function setActive(name){
+      document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.screen===name));
+    }
+
+    document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",async()=>{
+      const s=b.dataset.screen;setActive(s);
+      try{
+        if(s==="map")renderMap();
+        else if(s==="profile")renderProfile();
+        else await renderCollection();
+      }catch(e){screen.innerHTML='<div class="card error">'+esc(e.message)+'</div>';}
+    }));
+
+    async function start(){
+      screen.innerHTML='<div class="card loading">Loading Ragimo…</div>';
+      try{const d=await api("profile");user=d.user;renderMap();}
+      catch(e){screen.innerHTML='<div class="card error">'+esc(e.message)+'</div>';}
+    }
+    start();
   </script>
 </body>
 </html>
