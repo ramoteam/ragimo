@@ -82,10 +82,19 @@
     }
 
     function renderMap(){
-      screen.innerHTML='<div class="map"><div class="map-label">📍 Nearby</div><div class="road one"></div><div class="road two"></div><div class="player"></div>'+
-        '<button class="creature a" data-slug="leafy" data-name="Leafy" data-emoji="🌱">🌱</button>'+
-        '<button class="creature b" data-slug="flamio" data-name="Flamio" data-emoji="🔥">🔥</button></div>'+
-        '<div class="hint">Tap a nearby Ragimo to inspect it.</div>';
+      const catalog=[
+        {slug:"leafy",name:"Leafy",emoji:"🌱"},
+        {slug:"flamio",name:"Flamio",emoji:"🔥"}
+      ];
+      const points=[[13,18],[31,52],[51,24],[70,61],[84,34],[58,78]];
+      const shuffled=[...points].sort(()=>Math.random()-.5);
+      const creatures=points.map((_,i)=>{
+        const c=catalog[Math.floor(Math.random()*catalog.length)];
+        return {...c,x:shuffled[i][0],y:shuffled[i][1]};
+      });
+      screen.innerHTML='<div class="map"><div class="map-label">📍 Nearby · fresh spawns</div><div class="road one"></div><div class="road two"></div><div class="player"></div>'+
+        creatures.map(c=>'<button class="creature" style="left:'+c.x+'%;top:'+c.y+'%" data-slug="'+esc(c.slug)+'" data-name="'+esc(c.name)+'" data-emoji="'+esc(c.emoji)+'">'+esc(c.emoji)+'</button>').join('')+
+        '</div><div class="hint">Wild Ragimos move around the map. New spots appear every minute.</div>';
       document.querySelectorAll(".creature").forEach(b=>b.addEventListener("click",()=>openCreature(b.dataset.slug,b.dataset.name,b.dataset.emoji)));
     }
 
