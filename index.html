@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f5f5f5">
+  <title>Ragimo</title>
+  <script src="https://telegram.org/js/telegram-web-app.js?63"></script>
+  <style>
+    :root { color-scheme: light dark; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--tg-theme-bg-color, #f5f5f5);
+      color: var(--tg-theme-text-color, #111);
+    }
+    main { max-width: 520px; margin: auto; padding: 28px 18px; }
+    .logo { font-size: 34px; font-weight: 900; letter-spacing: -1px; }
+    .sub { opacity: .65; margin-top: 4px; }
+    .card {
+      margin-top: 22px; padding: 22px; border-radius: 24px;
+      background: var(--tg-theme-secondary-bg-color, #fff);
+    }
+    .avatar {
+      width: 68px; height: 68px; border-radius: 20px; display: grid;
+      place-items: center; background: #111; color: #fff;
+      font-size: 30px; font-weight: 800;
+    }
+    .name { font-size: 25px; font-weight: 800; margin-top: 16px; }
+    .username { opacity: .55; margin-top: 3px; }
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 22px; }
+    .stat {
+      padding: 14px 10px; border-radius: 16px;
+      background: var(--tg-theme-bg-color, #f5f5f5); text-align: center;
+    }
+    .num { font-size: 22px; font-weight: 800; }
+    .label { font-size: 12px; opacity: .55; }
+    .loading { text-align: center; padding: 40px 0; opacity: .65; }
+    .error { text-align: center; padding: 30px 0; color: #b42318; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="logo">Ragimo 🌍✨</div>
+    <div class="sub">Explore. Collect. Discover.</div>
+    <div id="app" class="card"><div class="loading">Loading your profile…</div></div>
+  </main>
+
+  <script>
+    const API_URL = "https://ucrdzeveifycwsvneuhs.supabase.co/functions/v1/ragimo-mini-app";
+    const tg = window.Telegram && window.Telegram.WebApp;
+    const app = document.getElementById("app");
+
+    if (tg) {
+      tg.ready();
+      tg.expand();
+    }
+
+    function esc(value) {
+      return String(value).replace(/[&<>"]/g, c => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"
+      }[c]));
+    }
+
+    async function load() {
+      try {
+        if (!tg || !tg.initData) {
+          throw new Error("Open Ragimo from Telegram.");
+        }
+
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ initData: tg.initData })
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Unable to load profile.");
+
+        const u = data.user;
+        const initial = (u.display_name || u.first_name || "R").trim().charAt(0).toUpperCase();
+        const name = u.display_name || u.first_name || "Ragimo Player";
+        const username = u.username ? "@" + u.username : "Ragimo Explorer";
+
+        app.innerHTML =
+          '<div class="avatar">' + esc(initial) + '</div>' +
+          '<div class="name">' + esc(name) + '</div>' +
+          '<div class="username">' + esc(username) + '</div>' +
+          '<div class="stats">' +
+            '<div class="stat"><div class="num">' + (Number(u.level) || 1) + '</div><div class="label">LEVEL</div></div>' +
+            '<div class="stat"><div class="num">' + (Number(u.xp) || 0) + '</div><div class="label">XP</div></div>' +
+            '<div class="stat"><div class="num">' + (Number(u.coins) || 0) + '</div><div class="label">COINS</div></div>' +
+          '</div>';
+      } catch (error) {
+        app.innerHTML = '<div class="error">' + esc(error.message) + '</div>';
+      }
+    }
+
+    load();
+  </script>
+</body>
+</html>
