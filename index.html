@@ -6,6 +6,8 @@
   <meta name="theme-color" content="#f5f5f5">
   <title>Ragimo</title>
   <script src="https://telegram.org/js/telegram-web-app.js?63"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
     :root { color-scheme: light dark; }
     * { box-sizing: border-box; }
@@ -21,7 +23,7 @@
     .stat { padding:13px 8px;border-radius:16px;background:var(--tg-theme-bg-color,#f5f5f5);text-align:center; }
     .num { font-size:21px;font-weight:800; }.label { font-size:11px;opacity:.55; }
     .loading{text-align:center;padding:34px 0;opacity:.65}.error{text-align:center;padding:28px 0;color:#b42318}
-    .map { position:relative;height:310px;overflow:hidden;border-radius:24px;margin-top:18px;background:#dfe8d5;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06); }
+    .map { position:relative;height:360px;overflow:hidden;border-radius:24px;margin-top:18px;background:#dfe8d5;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06); }
     .map:before { content:"";position:absolute;inset:-30%;transform:rotate(-7deg);background:repeating-linear-gradient(22deg,transparent 0 58px,rgba(255,255,255,.75) 59px 66px); }
     .map:after { content:"";position:absolute;width:120%;height:75px;left:-10%;top:125px;background:rgba(151,190,215,.72);transform:rotate(-12deg);border-radius:50%; }
     .road{position:absolute;background:rgba(255,255,255,.9);border-radius:99px;z-index:1}.road.one{width:120%;height:13px;top:72px;left:-10%;transform:rotate(18deg)}.road.two{width:100%;height:11px;top:235px;left:0;transform:rotate(-24deg)}
@@ -81,21 +83,39 @@
         '<div class="stat"><div class="num">'+(Number(user.coins)||0)+'</div><div class="label">COINS</div></div></div></div>';
     }
 
-    function renderMap(){
+    async function renderMap(){
+      screen.innerHTML='<div id="real-map" class="map"></div><div class="hint">📍 Your position is used only after you allow location access.</div>';
+      const map=L.map("real-map",{zoomControl:false}).setView([51.45,7.02],13);
+      L.control.zoom({position:"bottomright"}).addTo(map);
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap contributors"}).addTo(map);
+
+      const spawnPoints=[
+        [0.0021,0.0018],[0.0012,-0.0022],[-0.0019,0.0025],[0.0027,-0.0015],
+        [-0.0025,-0.0012],[-0.0010,0.0030]
+      ];
       const catalog=[
         {slug:"leafy",name:"Leafy",emoji:"🌱"},
         {slug:"flamio",name:"Flamio",emoji:"🔥"}
       ];
-      const points=[[13,18],[31,52],[51,24],[70,61],[84,34],[58,78]];
-      const shuffled=[...points].sort(()=>Math.random()-.5);
-      const creatures=points.map((_,i)=>{
-        const c=catalog[Math.floor(Math.random()*catalog.length)];
-        return {...c,x:shuffled[i][0],y:shuffled[i][1]};
-      });
-      screen.innerHTML='<div class="map"><div class="map-label">📍 Nearby · fresh spawns</div><div class="road one"></div><div class="road two"></div><div class="player"></div>'+
-        creatures.map(c=>'<button class="creature" style="left:'+c.x+'%;top:'+c.y+'%" data-slug="'+esc(c.slug)+'" data-name="'+esc(c.name)+'" data-emoji="'+esc(c.emoji)+'">'+esc(c.emoji)+'</button>').join('')+
-        '</div><div class="hint">Wild Ragimos move around the map. New spots appear every minute.</div>';
-      document.querySelectorAll(".creature").forEach(b=>b.addEventListener("click",()=>openCreature(b.dataset.slug,b.dataset.name,b.dataset.emoji)));
+
+      const showSpawns=(lat,lng)=>{
+        L.circleMarker([lat,lng],{radius:9,color:"#111",weight:3,fillColor:"#fff",fillOpacity:1}).addTo(map).bindTooltip("You");
+        spawnPoints.forEach((p,i)=>{
+          const c=catalog[Math.floor(Math.random()*catalog.length)];
+          const marker=L.marker([lat+p[0],lng+p[1]],{
+            icon:L.divIcon({className:"ragimo-marker",html:'<div style="width:52px;height:52px;border-radius:18px;background:white;box-shadow:0 5px 16px rgba(0,0,0,.2);display:grid;place-items:center;font-size:30px;border:2px solid rgba(0,0,0,.08)">'+c.emoji+'</div>',iconSize:[52,52],iconAnchor:[26,26]})
+          }).addTo(map);
+          marker.on("click",()=>openCreature(c.slug,c.name,c.emoji));
+        });
+      };
+
+      if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(
+          pos=>{const lat=pos.coords.latitude,lng=pos.coords.longitude;map.setView([lat,lng],15);showSpawns(lat,lng);},
+          ()=>showSpawns(51.45,7.02),
+          {enableHighAccuracy:false,maximumAge:300000,timeout:6000}
+        );
+      }else showSpawns(51.45,7.02);
     }
 
     async function renderCollection(){
